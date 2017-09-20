@@ -2,13 +2,12 @@ package sofianebattou.smarttrafficlights;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.EditText;
 
 /**
  * Created by Emmanuel on 2017-09-19.
  */
 
-public class CustomEditText extends EditText {
+    class CustomEditText extends android.support.v7.widget.AppCompatEditText{
 
     public CustomEditText(Context context) {
         super(context);
