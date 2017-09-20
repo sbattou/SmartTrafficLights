@@ -1,5 +1,6 @@
 package sofianebattou.smarttrafficlights;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
@@ -41,35 +42,24 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
+        // Adding Ottawa coordinates
         LatLng ottawa = new LatLng(45.422159, -75.680215);
-        Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
-                .clickable(true)
-                .add(
-                        new LatLng(45.422159, -75.680215),
-                        new LatLng(45.425329, -75.682833),
-                        new LatLng(45.426029, -75.681261)
-                ));
 
-        //mMap.addMarker(new MarkerOptions().position(ottawa).title("Marker in Ottawa"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(ottawa));
-        // create marker
-        MarkerOptions marker3 = new MarkerOptions().position(new LatLng(45.422159, -75.68021)).title("Hello Maps");
-
-// Changing marker icon
-        marker3.icon(BitmapDescriptorFactory.fromResource(R.drawable.dot));
-
-// adding marker
-        mMap.addMarker(marker3);
-
-         LatLngBounds AUSTRALIA = new LatLngBounds(
-                new LatLng(45.421536,-75.682823), new LatLng(45.426280, -75.679894));
-
-// Set the camera to the greatest possible zoom level that includes the
-// bounds
+        // Moving the camera
+        LatLngBounds AUSTRALIA = new LatLngBounds(new LatLng(45.421536,-75.682823), new LatLng(45.426280, -75.679894));
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(AUSTRALIA, 0));
 
+        // Adding the path
+        Polyline polyline1 = mMap.addPolyline(new PolylineOptions().width(8).color(Color.RED).clickable(true).add(
+            new LatLng(45.422159, -75.680215),
+            new LatLng(45.425329, -75.682833),
+            new LatLng(45.426029, -75.681261)
+        ));
+
+        // Creating a custom marker
+        MarkerOptions marker = new MarkerOptions().position(new LatLng(45.422159, -75.680215)).title("Hello Maps");
+        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.dot));
+        mMap.addMarker(marker);
 
     }
 }
