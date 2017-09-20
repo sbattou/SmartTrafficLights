@@ -1,14 +1,17 @@
 package sofianebattou.smarttrafficlights;
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class Map extends FragmentActivity implements OnMapReadyCallback {
 
@@ -39,8 +42,24 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng ottawa = new LatLng(45.422159, -75.680215);
+        Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
+                .clickable(true)
+                .add(
+                        new LatLng(45.422159, -75.680215),
+                        new LatLng(45.425329, -75.682833),
+                        new LatLng(45.426029, -75.681261)
+                ));
+
+        //mMap.addMarker(new MarkerOptions().position(ottawa).title("Marker in Ottawa"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(ottawa));
+        // create marker
+        MarkerOptions marker3 = new MarkerOptions().position(new LatLng(45.422159, -75.68021)).title("Hello Maps");
+
+// Changing marker icon
+        marker3.icon(BitmapDescriptorFactory.fromResource(R.drawable.dot));
+
+// adding marker
+        mMap.addMarker(marker3);
     }
 }
