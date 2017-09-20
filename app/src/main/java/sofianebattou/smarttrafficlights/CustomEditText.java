@@ -1,5 +1,7 @@
 package sofianebattou.smarttrafficlights;
 
+import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.EditText;
 
 /**
@@ -7,4 +9,22 @@ import android.widget.EditText;
  */
 
 public class CustomEditText extends EditText {
+
+    public CustomEditText(Context context) {
+        super(context);
+        ((Menu)context).setCustomEditText(this);
+        invalidate();
+    }
+
+    public CustomEditText(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        ((Menu)context).setCustomEditText(this);
+        invalidate();
+    }
+
+    public CustomEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        ((Menu)context).setCustomEditText(this);
+        invalidate();
+    }
 }
