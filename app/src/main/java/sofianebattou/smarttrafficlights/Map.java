@@ -9,6 +9,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -61,5 +62,14 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
 
 // adding marker
         mMap.addMarker(marker3);
+
+         LatLngBounds AUSTRALIA = new LatLngBounds(
+                new LatLng(45.421536,-75.682823), new LatLng(45.426280, -75.679894));
+
+// Set the camera to the greatest possible zoom level that includes the
+// bounds
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(AUSTRALIA, 0));
+
+
     }
 }
