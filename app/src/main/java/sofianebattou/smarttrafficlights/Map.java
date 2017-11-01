@@ -1,24 +1,31 @@
 package sofianebattou.smarttrafficlights;
 
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 public class Map extends FragmentActivity implements OnMapReadyCallback {
-
+    final LatLng thirdIntersection = new LatLng(45.425329, -75.682833); //intersection between laurier and king E
+    final LatLng fourthIntersection = new LatLng(45.426029, -75.681261); //end destination
     private GoogleMap mMap;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,25 +48,84 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        final LatLng thirdIntersection = new LatLng(45.425329, -75.682833);
+        final LatLng fourthIntersection = new LatLng(45.426029, -75.681261);
         mMap = googleMap;
-        // Adding Ottawa coordinates
-        LatLng ottawa = new LatLng(45.422159, -75.680215);
 
         // Moving the camera
-        LatLngBounds AUSTRALIA = new LatLngBounds(new LatLng(45.421536,-75.682823), new LatLng(45.426280, -75.679894));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(AUSTRALIA, 0));
+        LatLngBounds Ottawa = new LatLngBounds(new LatLng(45.421536,-75.682823), new LatLng(45.426280, -75.679894));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(Ottawa, 0));
 
         // Adding the path
-        Polyline polyline1 = mMap.addPolyline(new PolylineOptions().width(8).color(Color.RED).clickable(true).add(
+        Polyline polyline = mMap.addPolyline(new PolylineOptions().width(8).color(Color.RED).clickable(true).add(
             new LatLng(45.422159, -75.680215),
             new LatLng(45.425329, -75.682833),
             new LatLng(45.426029, -75.681261)
         ));
 
         // Creating a custom marker
-        MarkerOptions marker = new MarkerOptions().position(new LatLng(45.422159, -75.680215)).title("Hello Maps");
-        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.dot));
-        mMap.addMarker(marker);
+        Marker marker1 = mMap.addMarker(new MarkerOptions().position(new LatLng(45.422159, -75.680215)).title("Current Location"));
+        marker1.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.dot));
+
+
+        animateMarker(marker1,thirdIntersection,false);
+
+
+
+    }
+    public synchronized void animateMarker(final Marker marker, final LatLng toPosition, final boolean hideMarker) {
+        final int duration = 30000;
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = mMap.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final Interpolator interpolator = new LinearInterpolator();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed / duration);
+                double lng = t * toPosition.longitude + (1 - t) * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t) * startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
+
+        final Handler handler2 = new Handler();
+        handler2.postDelayed(new Runnable() {
+            final long start2 = SystemClock.uptimeMillis();
+
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - (start2 + duration);
+                float t = interpolator.getInterpolation((float) elapsed / (duration));
+                double lng = t * fourthIntersection.longitude + (1 - t) * thirdIntersection.longitude;
+                double lat = t * fourthIntersection.latitude + (1 - t) * thirdIntersection.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler2.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        },duration);
+
 
     }
 }
