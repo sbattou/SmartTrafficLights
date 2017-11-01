@@ -67,12 +67,18 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         Marker marker1 = mMap.addMarker(new MarkerOptions().position(new LatLng(45.422159, -75.680215)).title("Current Location"));
         marker1.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.dot));
 
-
+        // Moving the marker
         animateMarker(marker1,thirdIntersection,false);
-
-
-
     }
+
+    public void changeColorToGreen(Marker marker){
+        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.dot_green));
+    }
+
+    public void changeColorToBlack(Marker marker){
+        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.dot));
+    }
+
     public synchronized void animateMarker(final Marker marker, final LatLng toPosition, final boolean hideMarker) {
         final int duration = 30000;
         final Handler handler = new Handler();
@@ -108,6 +114,8 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
 
             @Override
             public void run() {
+                changeColorToGreen(marker);
+                changeColorToBlack(marker);
                 long elapsed = SystemClock.uptimeMillis() - (start2 + duration);
                 float t = interpolator.getInterpolation((float) elapsed / (duration));
                 double lng = t * fourthIntersection.longitude + (1 - t) * thirdIntersection.longitude;
