@@ -68,7 +68,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         marker1.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.dot));
 
         // Moving the marker
-        animateMarker(marker1,thirdIntersection,false);
+        animateMarker(marker1,thirdIntersection, fourthIntersection);
     }
 
     public void changeColorToGreen(Marker marker){
@@ -79,7 +79,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.dot));
     }
 
-    public synchronized void animateMarker(final Marker marker, final LatLng toPosition, final boolean hideMarker) {
+    public synchronized void animateMarker(final Marker marker, final LatLng toPosition1, final LatLng toPosition2) {
         final int duration = 30000;
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
@@ -92,18 +92,12 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
             public void run() {
                 long elapsed = SystemClock.uptimeMillis() - start;
                 float t = interpolator.getInterpolation((float) elapsed / duration);
-                double lng = t * toPosition.longitude + (1 - t) * startLatLng.longitude;
-                double lat = t * toPosition.latitude + (1 - t) * startLatLng.latitude;
+                double lng = t * toPosition1.longitude + (1 - t) * startLatLng.longitude;
+                double lat = t * toPosition1.latitude + (1 - t) * startLatLng.latitude;
                 marker.setPosition(new LatLng(lat, lng));
                 if (t < 1.0) {
                     // Post again 16ms later.
                     handler.postDelayed(this, 16);
-                } else {
-                    if (hideMarker) {
-                        marker.setVisible(false);
-                    } else {
-                        marker.setVisible(true);
-                    }
                 }
             }
         });
@@ -111,25 +105,20 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         final Handler handler2 = new Handler();
         handler2.postDelayed(new Runnable() {
             final long start2 = SystemClock.uptimeMillis();
-
+            int numFlash = 99;
             @Override
             public void run() {
+
                 changeColorToGreen(marker);
                 changeColorToBlack(marker);
                 long elapsed = SystemClock.uptimeMillis() - (start2 + duration);
                 float t = interpolator.getInterpolation((float) elapsed / (duration));
-                double lng = t * fourthIntersection.longitude + (1 - t) * thirdIntersection.longitude;
-                double lat = t * fourthIntersection.latitude + (1 - t) * thirdIntersection.latitude;
+                double lng = t * toPosition2.longitude + (1 - t) * toPosition1.longitude;
+                double lat = t * toPosition2.latitude + (1 - t) * toPosition1.latitude;
                 marker.setPosition(new LatLng(lat, lng));
                 if (t < 1.0) {
                     // Post again 16ms later.
                     handler2.postDelayed(this, 16);
-                } else {
-                    if (hideMarker) {
-                        marker.setVisible(false);
-                    } else {
-                        marker.setVisible(true);
-                    }
                 }
             }
         },duration);
