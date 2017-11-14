@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
@@ -81,6 +82,8 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
 
     public synchronized void animateMarker(final Marker marker, final LatLng toPosition1, final LatLng toPosition2) {
         final int duration = 30000;
+        final boolean[] flag1 = {true};
+        final boolean[] flag2 = {true};
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         Projection proj = mMap.getProjection();
@@ -91,6 +94,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
             @Override
             public void run() {
                 long elapsed = SystemClock.uptimeMillis() - start;
+                //Log.d("LOG","ELAPSED TIME:"+elapsed);
                 float t = interpolator.getInterpolation((float) elapsed / duration);
                 double lng = t * toPosition1.longitude + (1 - t) * startLatLng.longitude;
                 double lat = t * toPosition1.latitude + (1 - t) * startLatLng.latitude;
@@ -99,19 +103,24 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
                     // Post again 16ms later.
                     handler.postDelayed(this, 16);
                 }
+                if(elapsed >= 10000 && flag1[0]){ //5 seconds before the end
+                    Log.d("LOG","SEND SIGNAL" + elapsed);
+                    flag1[0] =false;
+                }
+                if(elapsed >= 25000 && flag2[0]){ //5 seconds before the end
+                    Log.d("LOG","SEND SIGNAL" + elapsed);
+                    flag2[0] =false;
+                }
             }
         });
 
         final Handler handler2 = new Handler();
         handler2.postDelayed(new Runnable() {
             final long start2 = SystemClock.uptimeMillis();
-            int numFlash = 99;
             @Override
             public void run() {
-
-                changeColorToGreen(marker);
-                changeColorToBlack(marker);
                 long elapsed = SystemClock.uptimeMillis() - (start2 + duration);
+                //Log.d("LOG","ELAPSED TIME:"+elapsed);
                 float t = interpolator.getInterpolation((float) elapsed / (duration));
                 double lng = t * toPosition2.longitude + (1 - t) * toPosition1.longitude;
                 double lat = t * toPosition2.latitude + (1 - t) * toPosition1.latitude;
@@ -122,7 +131,5 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
                 }
             }
         },duration);
-
-
     }
 }
