@@ -81,7 +81,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
     }
 
     public synchronized void animateMarker(final Marker marker, final LatLng toPosition1, final LatLng toPosition2) {
-        final int duration = 30000;
+        final int duration = 60000;
         final boolean[] flag1 = {true};
         final boolean[] flag2 = {true};
         final Handler handler = new Handler();
@@ -103,12 +103,15 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
                     // Post again 16ms later.
                     handler.postDelayed(this, 16);
                 }
-                if(elapsed >= 10000 && flag1[0]){ //5 seconds before the end
+                if(elapsed >= 15000 && flag1[0]){ //5 seconds before the end
                     Log.d("LOG","SEND SIGNAL" + elapsed);
+                    Menu.startRunning();
                     flag1[0] =false;
+
                 }
-                if(elapsed >= 25000 && flag2[0]){ //5 seconds before the end
+                if(elapsed >= 31000 && flag2[0]){ //5 seconds before the end
                     Log.d("LOG","SEND SIGNAL" + elapsed);
+                    Menu.startRunning();
                     flag2[0] =false;
                 }
             }
