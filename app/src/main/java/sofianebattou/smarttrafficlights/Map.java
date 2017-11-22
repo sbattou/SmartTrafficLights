@@ -84,6 +84,8 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         final int duration = 60000;
         final boolean[] flag1 = {true};
         final boolean[] flag2 = {true};
+        final boolean[] flag3 = {true};
+        final boolean[] flag4 = {true};
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         Projection proj = mMap.getProjection();
@@ -105,14 +107,25 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
                 }
                 if(elapsed >= 15000 && flag1[0]){ //5 seconds before the end
                     Log.d("LOG","SEND SIGNAL" + elapsed);
-                    Menu.startRunning();
+                    Menu.startRunning(1);
                     flag1[0] =false;
 
                 }
                 if(elapsed >= 31000 && flag2[0]){ //5 seconds before the end
                     Log.d("LOG","SEND SIGNAL" + elapsed);
-                    Menu.startRunning();
+                    Menu.startRunning(1);
                     flag2[0] =false;
+                }
+                if(elapsed >= 45000 && flag3[0]){ //5 seconds before the end
+                    Log.d("LOG","SEND SIGNAL" + elapsed);
+                    Menu.startRunning(2);
+                    flag3[0] =false;
+
+                }
+                if(elapsed >= 59000 && flag4[0]){ //5 seconds before the end
+                    Log.d("LOG","SEND SIGNAL" + elapsed);
+                    Menu.startRunning(2);
+                    flag4[0] =false;
                 }
             }
         });

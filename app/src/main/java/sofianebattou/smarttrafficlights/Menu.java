@@ -30,6 +30,7 @@ public class Menu extends AppCompatActivity {
     static PrintWriter interTwo=null;
 
     static OutputStream outOne=null;
+    static OutputStream outTwo=null;
     static String TAG="Menu";
 
     @Override
@@ -81,7 +82,7 @@ public class Menu extends AppCompatActivity {
 
     }
     /**Sends commands to the Arduinos so that they start running the default light sequences. */
-    public static void startRunning(){
+    public static void startRunning(final int intersection){
 
         class sendCommandTask extends AsyncTask<String, Void, Void> {
 
@@ -89,8 +90,15 @@ public class Menu extends AppCompatActivity {
 
             protected Void doInBackground(String... ip) {
                 try {
-                    byte a=1;
-                    outOne.write(a);
+                    if(intersection==1){
+
+                        byte a=1;
+                        outOne.write(a);
+                    }else if (intersection==2){
+
+                        byte a=1;
+                        outTwo.write(a);
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -104,6 +112,8 @@ public class Menu extends AppCompatActivity {
         Log.d(TAG,"Sent three chars to the controller.");
 
     }
+
+
 
     /**To set the edittext in order to read the Ip address entered by the user.  */
     void setCustomEditText(CustomEditText a){
@@ -132,6 +142,7 @@ public class Menu extends AppCompatActivity {
                    /* Toast.makeText(this, "Successfully connected to Intersection #1",
                             Toast.LENGTH_SHORT).show();*/
                 }else if(arduinoNumberToConnectTo==2){
+                    outTwo=s.getOutputStream();
                     interTwo= new PrintWriter(s.getOutputStream(),true);
                     arduinoNumberToConnectTo++;
                     /*Toast.makeText(this, "Successfully connected to Intersection #2",
